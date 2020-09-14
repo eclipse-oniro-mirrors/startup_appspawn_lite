@@ -119,7 +119,7 @@ static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, Ip
         return EC_FAILURE;
     }
 
-    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] msg<%{public}s,%{public}s,%{public}llu,%{public}d,%{public}d>",\
+    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] msg<%{public}s,%{public}s,%{public}s,%{public}d,%{public}d>",\
         msgSt.bundleName, msgSt.sharedLibPaths, msgSt.identityID, msgSt.uID, msgSt.gID);
 
     pid_t newPid = CreateProcess(&msgSt);

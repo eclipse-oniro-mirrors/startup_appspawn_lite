@@ -126,9 +126,9 @@ pid_t CreateProcess(const MessageSt* msgSt)
         return -1;
     }
 
-    if (sprintf_s(identityIDStr, MAX_IDENTITY_ID_LENGTH, "%llu", msgSt->identityID) <= 0 ||
+    if (sprintf_s(identityIDStr, MAX_IDENTITY_ID_LENGTH, "%s", msgSt->identityID) <= 0 ||
         sprintf_s(processNameStr, MAX_PROCESS_NAME_LENGTH, "%s", msgSt->bundleName) <= 0) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sprintf_s failed. id %{public}llu, name %{public}s.",\
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sprintf_s failed. id %{public}s, name %{public}s.",\
             msgSt->identityID, msgSt->bundleName);
         return -1;
     }
