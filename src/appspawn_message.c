@@ -22,12 +22,6 @@
 #include "ohos_errno.h"
 #include "securec.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
-
 static const size_t MAX_BUNDLE_NAME_LEN = 127;
 static const size_t MIN_BUNDLE_NAME_LEN = 7;
 static const size_t MAX_SHARED_LIB_PATH_LEN = 2048;
@@ -145,9 +139,3 @@ int SplitMessage(const char* msg, unsigned int msgLen, MessageSt* msgSt)
     }
     return EC_SUCCESS;
 }
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */

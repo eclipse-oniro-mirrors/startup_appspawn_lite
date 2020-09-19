@@ -23,12 +23,6 @@
 #include "log.h"
 #include "securec.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
-
 #define DEFAULT_UMASK 022
 #define CAP_NUM 2
 #define ABILITY_EXE_FILE_FULL_PATH "/bin/abilityMain"
@@ -175,9 +169,3 @@ pid_t CreateProcess(const MessageSt* msgSt)
     free(envStr);
     return newPID;
 }
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */

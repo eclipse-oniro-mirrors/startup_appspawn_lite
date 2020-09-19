@@ -26,12 +26,6 @@
 #include "samgr_lite.h"
 #include "service.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
-
 static const int INVALID_PID = -1;
 
 typedef struct AppSpawnFeatureApi {
@@ -160,9 +154,3 @@ void AppSpawnInit(void)
 }
 
 SYSEX_SERVICE_INIT(AppSpawnInit);
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
