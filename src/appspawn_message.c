@@ -30,8 +30,6 @@ extern "C" {
 
 static const size_t MAX_BUNDLE_NAME_LEN = 127;
 static const size_t MIN_BUNDLE_NAME_LEN = 7;
-static const size_t MAX_SHARED_LIB_PATH_LEN = 2048;
-static const size_t MIN_SHARED_LIB_PATH_LEN = 0;
 static const size_t MAX_IDENTITY_ID_LEN = 24;
 static const size_t MIN_IDENTITY_ID_LEN = 1;
 
@@ -41,11 +39,6 @@ void FreeMessageSt(MessageSt* targetSt)
         if (targetSt->bundleName != NULL) {
             free(targetSt->bundleName);
             targetSt->bundleName = NULL;
-        }
-
-        if (targetSt->sharedLibPaths != NULL) {
-            free(targetSt->sharedLibPaths);
-            targetSt->sharedLibPaths = NULL;
         }
 
         if (targetSt->identityID != NULL) {
@@ -113,14 +106,6 @@ int SplitMessage(const char* msg, unsigned int msgLen, MessageSt* msgSt)
     cJSON* bundleNameItem = cJSON_GetObjectItem(rootJ, "bundleName");
     int ret = ReadStringItem(bundleNameItem, &(msgSt->bundleName), MAX_BUNDLE_NAME_LEN, MIN_BUNDLE_NAME_LEN);
     if (ret != EC_SUCCESS) {
-        cJSON_Delete(rootJ);
-        return ret;
-    }
-
-    cJSON* libPathsItem = cJSON_GetObjectItem(rootJ, "sharedLibPaths");
-    ret = ReadStringItem(libPathsItem, &(msgSt->sharedLibPaths), MAX_SHARED_LIB_PATH_LEN, MIN_SHARED_LIB_PATH_LEN);
-    if (ret != EC_SUCCESS) {
-        FreeMessageSt(msgSt);
         cJSON_Delete(rootJ);
         return ret;
     }

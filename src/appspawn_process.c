@@ -88,41 +88,11 @@ static int SetPerms(uid_t uID, gid_t gID)
     return 0;
 }
 
-static char* GetEnvStrs(const MessageSt* msgSt)
-{
-    size_t totalLen = strlen(ENV_TITLE) + strlen(msgSt->sharedLibPaths);
-    char* envStr = (char*)malloc(totalLen + 1);
-    if (envStr == NULL) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] malloc for env failed! len %{public}u.", totalLen);
-        return NULL;
-    }
-
-    if (memset_s(envStr, totalLen + 1, '\0', totalLen + 1) != EOK) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] memset_s for env failed.");
-        free(envStr);
-        return NULL;
-    }
-
-    if (sprintf_s(envStr, totalLen + 1, "%s%s", ENV_TITLE, msgSt->sharedLibPaths) <= 0) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sprintf_s for env failed. libPath %{public}s",\
-            msgSt->sharedLibPaths);
-        free(envStr);
-        return NULL;
-    }
-    return envStr;
-}
-
 pid_t CreateProcess(const MessageSt* msgSt)
 {
-    char* envStr = GetEnvStrs(msgSt);
-    if (envStr == NULL) {
-        return -1;
-    }
-
     pid_t newPID = fork();
     if (newPID < 0) {
         HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] create process, fork failed! err %{public}d.", errno);
-        free(envStr);
         return -1;
     }
 
@@ -144,7 +114,6 @@ pid_t CreateProcess(const MessageSt* msgSt)
         exit(0x7f); // 0x7f: user specified
     }
 
-    free(envStr);
     return newPID;
 }
 
