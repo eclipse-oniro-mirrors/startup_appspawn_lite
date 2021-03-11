@@ -12,17 +12,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "appspawn_adapter.h"
-#include <stdio.h>
-#include <sys/prctl.h>
+#ifndef BASE_STARTUP_APPSPAWN_MESSAGE_H
+#define BASE_STARTUP_APPSPAWN_MESSAGE_H
 
-int KeepCapability()
-{
-#ifdef __LINUX__
-    if (prctl(PR_SET_KEEPCAPS, 1)) {
-        printf("prctl failed\n");
-        return -1;
-    }
-#endif
-    return 0;
+#ifdef __cplusplus
+#if __cplusplus
+extern "C" {
+#endif /* __cpluscplus */
+#endif /* __cpluscplus */
+
+typedef struct {
+    char* bundleName;
+    char* identityID;
+    int uID;
+    int gID;
+    unsigned int* caps;
+    unsigned int  capsCnt;
+} MessageSt;
+
+int SplitMessage(const char* msg, unsigned int msgLen, MessageSt* msgSt);
+
+void FreeMessageSt(MessageSt* targetSt);
+
+#ifdef __cplusplus
+#if __cplusplus
 }
+#endif
+#endif
+
+#endif // BASE_STARTUP_APPSPAWN_SERVICE_H

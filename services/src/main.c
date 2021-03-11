@@ -61,6 +61,7 @@ void SignalRegist()
 
 int main(int argc, char * const argv[])
 {
+    sleep(1);
     HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] main, enter.");
 
     // 1. ipc module init

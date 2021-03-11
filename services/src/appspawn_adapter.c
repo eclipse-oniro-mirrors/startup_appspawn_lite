@@ -12,31 +12,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef BASE_STARTUP_APPSPAWN_ADAPTER_H
-#define BASE_STARTUP_APPSPAWN_ADAPTER_H
+#include "appspawn_adapter.h"
+#include <stdio.h>
+#include <sys/prctl.h>
 #ifdef __LINUX__
-#include <linux/capability.h>
-#else
-#include <sys/capability.h>
+#include <linux/securebits.h>
 #endif
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
-
+int KeepCapability()
+{
 #ifdef __LINUX__
-extern int capset(void *a, void *b);
+    if (prctl(PR_SET_SECUREBITS, SECBIT_NO_SETUID_FIXUP | SECBIT_NO_SETUID_FIXUP_LOCKED)) {
+        printf("prctl failed\n");
+        return -1;
+    }
 #endif
-
-int KeepCapability();
-
-#ifdef __cplusplus
-#if __cplusplus
+    return 0;
 }
-#endif
-#endif
 
-#endif  // BASE_STARTUP_APPSPAWN_ADAPTER_H
+int SetAmbientCapability(int cap)
+{
+#ifdef __LINUX__
+    if (prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, cap, 0, 0)) {
+        printf("[Init] prctl PR_CAP_AMBIENT failed\n");
+        return -1;
+    }
+#endif
+    return 0;
+}
+

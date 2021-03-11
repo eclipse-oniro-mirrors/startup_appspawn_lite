@@ -14,6 +14,12 @@
  */
 #include "appspawn_service.h"
 #include <stdlib.h>
+
+#ifdef OHOS_DEBUG
+#include <errno.h>
+#include <time.h>
+#endif // OHOS_DEBUG
+
 #include "appspawn_message.h"
 #include "appspawn_process.h"
 #include "iproxy_server.h"
@@ -25,6 +31,7 @@
 #include "ohos_init.h"
 #include "samgr_lite.h"
 #include "service.h"
+
 
 static const int INVALID_PID = -1;
 
@@ -75,51 +82,85 @@ static TaskConfig GetTaskConfig(Service* service)
     return config;
 }
 
-static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, IpcIo* reply)
+#ifdef OHOS_DEBUG
+static void GetCurTime(struct timespec* tmCur)
 {
-    (void)iProxy;
-    (void)origin;
-    if (reply == NULL) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply NULL!");
-        return EC_BADPTR;
+    if (clock_gettime(CLOCK_REALTIME, tmCur) != 0) {
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, get time failed! err %{public}d", errno);
+    }
+}
+#endif // OHOS_DEBUG
+
+static int GetMessageSt(MessageSt* msgSt, IpcIo* req)
+{
+#ifdef __LINUX__
+    size_t len = 0;
+    char* str = IpcIoPopString(req, &len);
+    if (str == NULL || len == 0) {
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, get data failed.");
+        return EC_FAILURE;
     }
 
-    if (funcId != ID_CALL_CREATE_SERVICE || req == NULL) {
+    int ret = SplitMessage(str, len, msgSt);    // after split message, str no need to free(linux version)
+#else
+    BuffPtr* dataPtr = IpcIoPopDataBuff(req);
+    if (dataPtr == NULL) {
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, get data failed.");
+        return EC_FAILURE;
+    }
+
+    int ret = SplitMessage((char*)dataPtr->buff, dataPtr->buffSz, msgSt);
+
+    // release buffer
+    if (FreeBuffer(NULL, dataPtr->buff) != LITEIPC_OK) {
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, free buffer failed!");
+    }
+#endif
+    return ret;
+}
+
+static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, IpcIo* reply)
+{
+#ifdef OHOS_DEBUG
+    struct timespec tmStart = {0};
+    GetCurTime(&tmStart);
+#endif // OHOS_DEBUG
+
+    (void)iProxy;
+    (void)origin;
+
+    if (reply == NULL || funcId != ID_CALL_CREATE_SERVICE || req == NULL) {
         HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, funcId %{public}d invalid, reply %{public}d.",\
             funcId, INVALID_PID);
         IpcIoPushInt64(reply, INVALID_PID);
         return EC_BADPTR;
     }
 
-    BuffPtr* dataPtr = IpcIoPopDataBuff(req);
-    if (dataPtr == NULL) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, get data failed, reply %{public}d.", INVALID_PID);
-        IpcIoPushInt64(reply, INVALID_PID);
-        return EC_FAILURE;
-    }
-
     MessageSt msgSt = {0};
-    int ret = SplitMessage((char*)dataPtr->buff, dataPtr->buffSz, &msgSt);
-
-    // release buffer
-    if (FreeBuffer(NULL, dataPtr->buff) != LITEIPC_OK) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, free buffer failed!");
-    }
-
-    if (ret != EC_SUCCESS) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, parse failed! err %{public}d, reply %{public}d.",\
-            ret, INVALID_PID);
+    if (GetMessageSt(&msgSt, req) != EC_SUCCESS) {
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, parse failed! reply %{public}d.", INVALID_PID);
         IpcIoPushInt64(reply, INVALID_PID);
         return EC_FAILURE;
     }
 
-    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] msg<%{public}s,%{public}s,%{public}d,%{public}d>",\
+    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, msg<%{public}s,%{public}s,%{public}d,%{public}d>",\
         msgSt.bundleName, msgSt.identityID, msgSt.uID, msgSt.gID);
 
     pid_t newPid = CreateProcess(&msgSt);
     FreeMessageSt(&msgSt);
     IpcIoPushInt64(reply, newPid);
+
+#ifdef OHOS_DEBUG
+    struct timespec tmEnd = {0};
+    GetCurTime(&tmEnd);
+
+    // 1s = 1000000000ns
+    long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * 1000000000 + (tmEnd.tv_nsec - tmStart.tv_nsec);
+    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply pid %{public}d, timeused %{public}ld ns.",\
+        newPid, timeUsed);
+#else
     HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply pid %{public}d.", newPid);
+#endif // OHOS_DEBUG
 
     return ((newPid > 0) ? EC_SUCCESS : EC_FAILURE);
 }
@@ -154,3 +195,4 @@ void AppSpawnInit(void)
 }
 
 SYSEX_SERVICE_INIT(AppSpawnInit);
+
