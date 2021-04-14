@@ -131,7 +131,7 @@ public:
  ** @tc.require: AR000F733K
  ** @tc.author: ZAL
  **/
-HWTEST_F(StartupAppspawnUTest, msgFuncFreeTest_001, TestSize.Level0)
+HWTEST_F(StartupAppspawnUTest, msgFuncFreeTest_001, TestSize.Level1)
 {
     // do not crash here
     FreeMessageSt(nullptr);
@@ -154,7 +154,7 @@ HWTEST_F(StartupAppspawnUTest, msgFuncFreeTest_001, TestSize.Level0)
  ** @tc.require: AR000F733K
  ** @tc.author: ZAL
  **/
-HWTEST_F(StartupAppspawnUTest, msgFuncFreeTest_002, TestSize.Level0)
+HWTEST_F(StartupAppspawnUTest, msgFuncFreeTest_002, TestSize.Level1)
 {
     MessageSt msgSt = {0};
 
@@ -220,7 +220,7 @@ static void GetCurrentTime(struct timespec* tmCur)
  ** @tc.require: AR000F733K
  ** @tc.author: ZAL
  **/
-HWTEST_F(StartupAppspawnUTest, msgFuncSplitTest_001, TestSize.Level0)
+HWTEST_F(StartupAppspawnUTest, msgFuncSplitTest_001, TestSize.Level1)
 {
     MessageSt msgSt = {0};
     EXPECT_NE(SplitMessage(nullptr, 0, nullptr), 0);
@@ -255,7 +255,7 @@ HWTEST_F(StartupAppspawnUTest, msgFuncSplitTest_001, TestSize.Level0)
  ** @tc.require: AR000F733K
  ** @tc.author: ZAL
  **/
-HWTEST_F(StartupAppspawnUTest, msgFuncSplitTest_002, TestSize.Level0)
+HWTEST_F(StartupAppspawnUTest, msgFuncSplitTest_002, TestSize.Level1)
 {
     MessageSt msgSt = {0};
 
