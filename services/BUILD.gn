@@ -32,12 +32,6 @@ executable("appspawn") {
     "-ldl",
   ]
 
-  cflags = [
-    "-Wall",
-    "-Wno-format",
-    "-Wno-format-extra-args",
-  ]
-
   include_dirs = [
     "include",
     "//utils/native/lite/include",
