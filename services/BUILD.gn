@@ -67,10 +67,6 @@ executable("appspawn") {
   }
 
   if (ohos_kernel_type == "liteos_a") {
-    include_dirs += [
-      "//kernel/liteos_a/kernel/include",
-      "//kernel/liteos_a/kernel/common",
-    ]
     deps += [ "//base/hiviewdfx/hilog_lite/frameworks/featured:hilog_shared" ]
   }
 
