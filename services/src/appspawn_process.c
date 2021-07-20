@@ -150,6 +150,9 @@ pid_t CreateProcess(const MessageSt* msgSt)
 #endif // OHOS_DEBUG
 
         // set permissions
+        if (msgSt->caps == NULL) {
+            exit(0x7f); // 0x7f: user specified
+        }
         if (SetPerms(msgSt->uID, msgSt->gID, msgSt->capsCnt, msgSt->caps) != 0) {
             HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sub-process %{public}s exit!", msgSt->bundleName);
             exit(0x7f); // 0x7f: user specified
@@ -164,7 +167,7 @@ pid_t CreateProcess(const MessageSt* msgSt)
                 getpid(), errno);
         }
         // 1s = 1000000000ns
-        long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * 1000000000 + (tmEnd.tv_nsec - tmStart.tv_nsec);
+        long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * (long)1000000000 + (tmEnd.tv_nsec - tmStart.tv_nsec);
         HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] sub-process, pid %{public}d, timeused %ld ns.",\
             getpid(), timeUsed);
 #endif // OHOS_DEBUG

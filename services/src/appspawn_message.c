@@ -59,7 +59,7 @@ void FreeMessageSt(MessageSt* targetSt)
     }
 }
 
-static int ReadStringItem(cJSON* strItem, char** buf, size_t maxLen, size_t minLen)
+static enum OHOSLiteErrorCode ReadStringItem(cJSON* strItem, char** buf, size_t maxLen, size_t minLen)
 {
     if (strItem == NULL || !cJSON_IsString(strItem)) {
         return EC_INVALID;
@@ -80,7 +80,7 @@ static int ReadStringItem(cJSON* strItem, char** buf, size_t maxLen, size_t minL
         return EC_NOMEMORY;
     }
 
-    if (strLength > 0 && memcpy_s(bufTmp, strLength, strPtr, strLength) != EOK) {
+    if (strLength > 0 && memcpy_s(bufTmp, strLength + 1, strPtr, strLength) != EOK) {
         free(bufTmp);
         bufTmp = NULL;
         return EC_FAILURE;
@@ -117,7 +117,7 @@ static int GetCaps(const cJSON* curItem, MessageSt* msgSt)
     }
 
     if (capsCnt > MAX_CAPABILITY_COUNT) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] GetCaps, too many caps[cnt %{public}d], max %{public}d",\
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] GetCaps, too many caps[cnt %{public}d], max %{public}d",
             capsCnt, MAX_CAPABILITY_COUNT);
         return EC_INVALID;
     }
@@ -167,7 +167,7 @@ int SplitMessage(const char* msg, unsigned int msgLen, MessageSt* msgSt)
     }
 
     cJSON* bundleNameItem = cJSON_GetObjectItem(rootJ, "bundleName");
-    int ret = ReadStringItem(bundleNameItem, &(msgSt->bundleName), MAX_BUNDLE_NAME_LEN, MIN_BUNDLE_NAME_LEN);
+    int ret = (int)ReadStringItem(bundleNameItem, &(msgSt->bundleName), MAX_BUNDLE_NAME_LEN, MIN_BUNDLE_NAME_LEN);
     if (ret != EC_SUCCESS) {
         FreeMessageSt(msgSt);
         cJSON_Delete(rootJ);
@@ -175,7 +175,7 @@ int SplitMessage(const char* msg, unsigned int msgLen, MessageSt* msgSt)
     }
 
     cJSON* identityIDItem = cJSON_GetObjectItem(rootJ, "identityID");
-    ret = ReadStringItem(identityIDItem, &(msgSt->identityID), MAX_IDENTITY_ID_LEN, MIN_IDENTITY_ID_LEN);
+    ret = (int)ReadStringItem(identityIDItem, &(msgSt->identityID), MAX_IDENTITY_ID_LEN, MIN_IDENTITY_ID_LEN);
     if (ret != EC_SUCCESS) {
         FreeMessageSt(msgSt);
         cJSON_Delete(rootJ);
