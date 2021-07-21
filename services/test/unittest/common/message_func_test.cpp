@@ -208,6 +208,9 @@ HWTEST_F(StartupAppspawnUTest, msgFuncFreeTest_002, TestSize.Level1)
 
 static void GetCurrentTime(struct timespec* tmCur)
 {
+    if (tmCur == NULL) {
+        return;
+    }
     if (clock_gettime(CLOCK_REALTIME, tmCur) != 0) {
         printf("[----------] StartupAppspawnUTest, get time failed! err %d.\n", errno);
     }
@@ -290,11 +293,14 @@ HWTEST_F(StartupAppspawnUTest, msgFuncSplitTest_002, TestSize.Level1)
     caps.push_back(1);    // 1, test capability
     caps.push_back(5);    // 5, test capability
 
+    EXPECT_NE(msgSt.bundleName, nullptr);
+    EXPECT_NE(msgSt.identityID, nullptr);
     EXPECT_EQ(strcmp("validName", msgSt.bundleName), 0);
     EXPECT_EQ(strcmp("135", msgSt.identityID), 0);
     EXPECT_EQ(TEST_UID, msgSt.uID);
     EXPECT_EQ(TEST_GID, msgSt.gID);
     EXPECT_EQ(caps.size(), msgSt.capsCnt);
+    EXPECT_NE(msgSt.caps, nullptr);
     for (size_t i = 0; i < caps.size(); ++i) {
         EXPECT_EQ(caps[i], msgSt.caps[i]);
     }

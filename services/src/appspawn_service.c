@@ -85,6 +85,9 @@ static TaskConfig GetTaskConfig(Service* service)
 #ifdef OHOS_DEBUG
 static void GetCurTime(struct timespec* tmCur)
 {
+    if (tmCur == NULL) {
+        return;
+    }
     if (clock_gettime(CLOCK_REALTIME, tmCur) != 0) {
         HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, get time failed! err %{public}d", errno);
     }
@@ -93,6 +96,9 @@ static void GetCurTime(struct timespec* tmCur)
 
 static int GetMessageSt(MessageSt* msgSt, IpcIo* req)
 {
+    if (msgSt == NULL || req == NULL) {
+        return EC_FAILURE;
+    }
 #ifdef __LINUX__
     size_t len = 0;
     char* str = IpcIoPopString(req, &len);
@@ -155,7 +161,7 @@ static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, Ip
     GetCurTime(&tmEnd);
 
     // 1s = 1000000000ns
-    long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * 1000000000 + (tmEnd.tv_nsec - tmStart.tv_nsec);
+    long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * (long)1000000000 + (tmEnd.tv_nsec - tmStart.tv_nsec);
     HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply pid %{public}d, timeused %{public}ld ns.",\
         newPid, timeUsed);
 #else
