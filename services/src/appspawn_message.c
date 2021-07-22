@@ -80,7 +80,7 @@ static enum OHOSLiteErrorCode ReadStringItem(cJSON* strItem, char** buf, size_t 
         return EC_NOMEMORY;
     }
 
-    if (strLength > 0 && memcpy_s(bufTmp, strLength + 1, strPtr, strLength) != EOK) {
+    if (strLength > 0 && memcpy_s(bufTmp, strLength, strPtr, strLength - 1) != EOK) {
         free(bufTmp);
         bufTmp = NULL;
         return EC_FAILURE;
