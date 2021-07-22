@@ -161,7 +161,7 @@ static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, Ip
     GetCurTime(&tmEnd);
 
     // 1s = 1000000000ns
-    long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * (long)1000000000 + (tmEnd.tv_nsec - tmStart.tv_nsec);
+    long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * 1000000000L + (tmEnd.tv_nsec - tmStart.tv_nsec);
     HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply pid %{public}d, timeused %{public}ld ns.",\
         newPid, timeUsed);
 #else
