@@ -208,7 +208,7 @@ HWTEST_F(StartupAppspawnUTest, msgFuncFreeTest_002, TestSize.Level1)
 
 static void GetCurrentTime(struct timespec* tmCur)
 {
-    if (tmCur == NULL) {
+    if (tmCur == nullptr) {
         return;
     }
     if (clock_gettime(CLOCK_REALTIME, tmCur) != 0) {
@@ -247,7 +247,7 @@ HWTEST_F(StartupAppspawnUTest, msgFuncSplitTest_001, TestSize.Level1)
     struct timespec tmEnd = {0};
     GetCurrentTime(&tmEnd);
     long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * NANOSECONDS_PER_SECOND + (tmEnd.tv_nsec - tmStart.tv_nsec);
-    printf("[----------] StartupAppspawnUTest, msgFuncSplitTest_001, total time %ld ns, strCnt %u.\n",\
+    printf("[----------] StartupAppspawnUTest, msgFuncSplitTest_001, total time %ld ns, strCnt %u.\n", \
         timeUsed, g_badStrings.size());
 }
 

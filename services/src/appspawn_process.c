@@ -76,19 +76,19 @@ static int SetPerms(uid_t uID, gid_t gID, unsigned int capsCnt, const unsigned i
     gid_t groups[GRP_NUM];
 
     if (KeepCapability() != 0) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] KeepCapability failed, uID %{public}u, err: %{public}d.",\
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] KeepCapability failed, uID %{public}u, err: %{public}d.", \
             uID, errno);
         return -1;
     }
 
     if (setgid(gID) != 0) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] setgid failed, gID %{public}u, err: %{public}d.",\
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] setgid failed, gID %{public}u, err: %{public}d.", \
             gID, errno);
         return -1;
     }
 
     if (setuid(uID) != 0) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] setuid failed, uID %{public}u, err: %{public}d.",\
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] setuid failed, uID %{public}u, err: %{public}d.", \
             uID, errno);
         return -1;
     }
@@ -98,7 +98,7 @@ static int SetPerms(uid_t uID, gid_t gID, unsigned int capsCnt, const unsigned i
         groups[0] = gID;
         groups[1] = DEVMGR_GRP;
         if (setgroups(GRP_NUM, groups)) {
-            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] setgroups failed, uID %{public}u, err: %{public}d.",\
+            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] setgroups failed, uID %{public}u, err: %{public}d.", \
                 uID, errno);
             return -1;
         }
@@ -144,7 +144,7 @@ pid_t CreateProcess(const MessageSt* msgSt)
 #ifdef OHOS_DEBUG
         struct timespec tmStart = {0};
         if (clock_gettime(CLOCK_REALTIME, &tmStart) != 0) {
-            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sub-process, pid %{public}d. get time err %{public}d.",\
+            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sub-process, pid %{public}d. get time err %{public}d.", \
                 getpid(), errno);
         }
 #endif // OHOS_DEBUG
@@ -160,12 +160,12 @@ pid_t CreateProcess(const MessageSt* msgSt)
 #ifdef OHOS_DEBUG
         struct timespec tmEnd = {0};
         if (clock_gettime(CLOCK_REALTIME, &tmEnd) != 0) {
-            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sub-process, pid %{public}d. get time2 err %{public}d.",\
+            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] sub-process, pid %{public}d. get time2 err %{public}d.", \
                 getpid(), errno);
         }
         // 1s = 1000000000ns
         long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * 1000000000L + (tmEnd.tv_nsec - tmStart.tv_nsec);
-        HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] sub-process, pid %{public}d, timeused %ld ns.",\
+        HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] sub-process, pid %{public}d, timeused %ld ns.", \
             getpid(), timeUsed);
 #endif // OHOS_DEBUG
 

@@ -138,7 +138,7 @@ static int GetCaps(const cJSON* curItem, MessageSt* msgSt)
         }
         msgSt->caps[i] = (unsigned int)cJSON_GetNumberValue(capJ);
         if (msgSt->caps[i] > CAP_LAST_CAP) {
-            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] GetCaps, invalid cap value %{public}u detected!",\
+            HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] GetCaps, invalid cap value %{public}u detected!", \
                 msgSt->caps[i]);
             free(msgSt->caps);
             msgSt->caps = NULL;
