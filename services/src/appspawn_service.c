@@ -62,7 +62,7 @@ static BOOL Initialize(Service* service, Identity identity)
     AppSpawnService* spawnService = (AppSpawnService*)service;
     spawnService->identity = identity;
 
-    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] initialize, identity<%{public}d, %{public}d, %{public}p>",\
+    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] initialize, identity<%{public}d, %{public}d, %{public}p>", \
         identity.serviceId, identity.featureId, identity.queueId);
     return TRUE;
 }
@@ -136,7 +136,7 @@ static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, Ip
     (void)origin;
 
     if (reply == NULL || funcId != ID_CALL_CREATE_SERVICE || req == NULL) {
-        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, funcId %{public}d invalid, reply %{public}d.",\
+        HILOG_ERROR(HILOG_MODULE_HIVIEW, "[appspawn] invoke, funcId %{public}d invalid, reply %{public}d.", \
             funcId, INVALID_PID);
         IpcIoPushInt64(reply, INVALID_PID);
         return EC_BADPTR;
@@ -149,7 +149,7 @@ static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, Ip
         return EC_FAILURE;
     }
 
-    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, msg<%{public}s,%{public}s,%{public}d,%{public}d>",\
+    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, msg<%{public}s,%{public}s,%{public}d,%{public}d>", \
         msgSt.bundleName, msgSt.identityID, msgSt.uID, msgSt.gID);
 
     pid_t newPid = CreateProcess(&msgSt);
@@ -162,7 +162,7 @@ static int Invoke(IServerProxy* iProxy, int funcId, void* origin, IpcIo* req, Ip
 
     // 1s = 1000000000ns
     long timeUsed = (tmEnd.tv_sec - tmStart.tv_sec) * 1000000000L + (tmEnd.tv_nsec - tmStart.tv_nsec);
-    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply pid %{public}d, timeused %{public}ld ns.",\
+    HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply pid %{public}d, timeused %{public}ld ns.", \
         newPid, timeUsed);
 #else
     HILOG_INFO(HILOG_MODULE_HIVIEW, "[appspawn] invoke, reply pid %{public}d.", newPid);
