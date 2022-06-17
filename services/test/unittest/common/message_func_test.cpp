@@ -12,13 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
-#include <sys/types.h>
 #include <time.h>
+
+#include <sys/types.h>
+
+#include <string>
 #include <vector>
+
 #include "gtest/gtest.h"
 #include "appspawn_message.h"
 
